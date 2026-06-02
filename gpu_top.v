@@ -1,0 +1,127 @@
+module gpu_top (
+    input  wire clk,
+    input  wire rst,
+    input  wire [15:0] v0x,
+    input  wire [15:0] v0y,
+    input  wire [15:0] v1x,
+    input  wire [15:0] v1y,
+    input  wire [15:0] v2x,
+    input  wire [15:0] v2y,
+    input  wire [7:0]  tri_color,
+    input  wire [15:0] tri_depth,
+    input  wire raster_start,
+    input  wire dump_en
+);
+
+    wire [2:0] tile_x_min;
+    wire [2:0] tile_x_max;
+    wire [2:0] tile_y_min;
+    wire [2:0] tile_y_max;
+    wire tile_valid;
+    wire no_overlap;
+
+    tile_binner binner (
+        .V0x(v0x),
+        .V0y(v0y),
+        .V1x(v1x),
+        .V1y(v1y),
+        .V2x(v2x),
+        .V2y(v2y),
+        .tile_x_min(tile_x_min),
+        .tile_x_max(tile_x_max),
+        .tile_y_min(tile_y_min),
+        .tile_y_max(tile_y_max),
+        .valid_out(tile_valid),
+        .no_overlap(no_overlap)
+    );
+
+    wire pixel_valid;
+    wire [15:0] pixel_x;
+    wire [15:0] pixel_y;
+    wire [7:0] pixel_color;
+    wire raster_done;
+
+    tile_rasterizer rasterizer (
+        .clk(clk),
+        .rst(rst),
+        .start(raster_start),
+        .tile_ox({10'd0, tile_x_min, 3'b000}),
+        .tile_oy({10'd0, tile_y_min, 3'b000}),
+        .v0x(v0x),
+        .v0y(v0y),
+        .v1x(v1x),
+        .v1y(v1y),
+        .v2x(v2x),
+        .v2y(v2y),
+        .color_in(tri_color),
+        .pixel_valid(pixel_valid),
+        .pixel_x(pixel_x),
+        .pixel_y(pixel_y),
+        .pixel_color(pixel_color),
+        .done(raster_done)
+    );
+
+    wire zbuf_read_en;
+    wire [5:0] zbuf_read_x;
+    wire [5:0] zbuf_read_y;
+    wire zbuf_write_en;
+    wire [5:0] zbuf_write_x;
+    wire [5:0] zbuf_write_y;
+    wire [15:0] zbuf_depth_in;
+    wire [15:0] zbuf_depth_out;
+
+    zbuffer zbuf (
+        .clk(clk),
+        .rst(rst),
+        .read_en(zbuf_read_en),
+        .write_en(zbuf_write_en),
+        .read_x(zbuf_read_x),
+        .read_y(zbuf_read_y),
+        .write_x(zbuf_write_x),
+        .write_y(zbuf_write_y),
+        .depth_in(zbuf_depth_in),
+        .depth_out(zbuf_depth_out)
+    );
+
+    wire fb_write_en;
+    wire [5:0] fb_write_x;
+    wire [5:0] fb_write_y;
+    wire [7:0] fb_write_color;
+
+    output_merger merger (
+        .clk(clk),
+        .rst(rst),
+        .pixel_valid_in(pixel_valid),
+        .pixel_x(pixel_x[5:0]),
+        .pixel_y(pixel_y[5:0]),
+        .pixel_color_in(pixel_color),
+        .pixel_depth_in(tri_depth),
+        .zbuf_read_en(zbuf_read_en),
+        .zbuf_read_x(zbuf_read_x),
+        .zbuf_read_y(zbuf_read_y),
+        .zbuf_depth_out(zbuf_depth_out),
+        .zbuf_write_en(zbuf_write_en),
+        .zbuf_write_x(zbuf_write_x),
+        .zbuf_write_y(zbuf_write_y),
+        .zbuf_depth_in(zbuf_depth_in),
+        .fb_write_en(fb_write_en),
+        .fb_write_x(fb_write_x),
+        .fb_write_y(fb_write_y),
+        .fb_write_color(fb_write_color)
+    );
+
+    framebuffer fb (
+        .clk(clk),
+        .rst(rst),
+        .write_en(fb_write_en),
+        .write_x(fb_write_x),
+        .write_y(fb_write_y),
+        .write_color(fb_write_color),
+        .read_en(1'b0),
+        .read_x(6'd0),
+        .read_y(6'd0),
+        .read_color(),
+        .dump_en(dump_en)
+    );
+
+endmodule

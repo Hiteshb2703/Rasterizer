@@ -1,0 +1,360 @@
+$date
+	Sat May 30 16:47:29 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tb_tile_binner $end
+$var wire 1 ! valid_out $end
+$var wire 3 " tile_y_min [2:0] $end
+$var wire 3 # tile_y_max [2:0] $end
+$var wire 3 $ tile_x_min [2:0] $end
+$var wire 3 % tile_x_max [2:0] $end
+$var wire 1 & no_overlap $end
+$var parameter 32 ' COORD_BITS $end
+$var parameter 32 ( SCREEN_H $end
+$var parameter 32 ) SCREEN_W $end
+$var parameter 32 * TILE_BITS $end
+$var parameter 32 + TILE_SIZE $end
+$var reg 1 , clk $end
+$var reg 1 - rst $end
+$var reg 16 . v0x [15:0] $end
+$var reg 16 / v0y [15:0] $end
+$var reg 16 0 v1x [15:0] $end
+$var reg 16 1 v1y [15:0] $end
+$var reg 16 2 v2x [15:0] $end
+$var reg 16 3 v2y [15:0] $end
+$var reg 1 4 valid_in $end
+$var integer 32 5 fail_count [31:0] $end
+$var integer 32 6 pass_count [31:0] $end
+$var integer 32 7 test_id [31:0] $end
+$scope module dut $end
+$var wire 16 8 V0x [15:0] $end
+$var wire 16 9 V0y [15:0] $end
+$var wire 16 : V1x [15:0] $end
+$var wire 16 ; V1y [15:0] $end
+$var wire 16 < V2x [15:0] $end
+$var wire 16 = V2y [15:0] $end
+$var wire 1 & no_overlap $end
+$var wire 1 > off_screen $end
+$var wire 1 ! valid_out $end
+$var wire 3 ? tile_y_min [2:0] $end
+$var wire 3 @ tile_y_max [2:0] $end
+$var wire 3 A tile_x_min [2:0] $end
+$var wire 3 B tile_x_max [2:0] $end
+$var wire 16 C min_y [15:0] $end
+$var wire 16 D min_x [15:0] $end
+$var wire 16 E max_y [15:0] $end
+$var wire 16 F max_x [15:0] $end
+$var wire 16 G clamped_y_min [15:0] $end
+$var wire 16 H clamped_y_max [15:0] $end
+$var wire 16 I clamped_x_min [15:0] $end
+$var wire 16 J clamped_x_max [15:0] $end
+$var parameter 32 K COORD_BITS $end
+$var parameter 32 L SCREEN_H $end
+$var parameter 32 M SCREEN_W $end
+$var parameter 32 N TILE_BITS $end
+$var parameter 32 O TILE_SHIFT $end
+$var parameter 32 P TILE_SIZE $end
+$upscope $end
+$scope task submit_and_check $end
+$var reg 1 Q exp_no_overlap $end
+$var reg 3 R exp_tx_max [2:0] $end
+$var reg 3 S exp_tx_min [2:0] $end
+$var reg 3 T exp_ty_max [2:0] $end
+$var reg 3 U exp_ty_min [2:0] $end
+$var reg 16 V i_v0x [15:0] $end
+$var reg 16 W i_v0y [15:0] $end
+$var reg 16 X i_v1x [15:0] $end
+$var reg 16 Y i_v1y [15:0] $end
+$var reg 16 Z i_v2x [15:0] $end
+$var reg 16 [ i_v2y [15:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1000 P
+b11 O
+b11 N
+b1000000 M
+b1000000 L
+b10000 K
+b1000 +
+b11 *
+b1000000 )
+b1000000 (
+b10000 '
+$end
+#0
+$dumpvars
+bx [
+bx Z
+bx Y
+bx X
+bx W
+bx V
+bx U
+bx T
+bx S
+bx R
+xQ
+b0 J
+b0 I
+b0 H
+b0 G
+b0 F
+b0 E
+b0 D
+b0 C
+b0 B
+b0 A
+b0 @
+b0 ?
+0>
+b0 =
+b0 <
+b0 ;
+b0 :
+b0 9
+b0 8
+b1 7
+b0 6
+b0 5
+04
+b0 3
+b0 2
+b0 1
+b0 0
+b0 /
+b0 .
+1-
+0,
+0&
+b0 %
+b0 $
+b0 #
+b0 "
+1!
+$end
+#5000
+1,
+#10000
+0,
+#15000
+1,
+#20000
+0,
+#25000
+0-
+1,
+#30000
+0,
+#35000
+b11 #
+b11 @
+b11 %
+b11 B
+b11100 H
+b11100 J
+b11100 E
+b11100 F
+b11100 3
+b11100 =
+b11100 0
+b11100 :
+0Q
+b11 T
+b0 U
+b11 R
+b0 S
+b11100 [
+b0 Z
+b0 Y
+b11100 X
+b0 W
+b0 V
+1,
+#40000
+0,
+#45000
+1,
+#46000
+14
+#50000
+0,
+#55000
+1,
+#56000
+04
+#60000
+0,
+#65000
+1,
+#66000
+b10 7
+b1 6
+#70000
+0,
+#75000
+b111 #
+b111 @
+b111 %
+b111 B
+b111111 H
+b111111 J
+b111111 E
+b111111 F
+b111111 3
+b111111 =
+b111111 0
+b111111 :
+b111 T
+b111 R
+b111111 [
+b111111 X
+1,
+#80000
+0,
+#85000
+1,
+#86000
+14
+#90000
+0,
+#95000
+1,
+#96000
+04
+#100000
+0,
+#105000
+1,
+#106000
+b11 7
+b10 6
+#110000
+0,
+#115000
+b111 $
+b111 A
+b111 "
+b111 ?
+b111111 I
+b111111 G
+1&
+0!
+1>
+b1010000 D
+b1010000 C
+b1100100 E
+b1100100 F
+b1100100 3
+b1100100 =
+b1010000 2
+b1010000 <
+b1010000 1
+b1010000 ;
+b1100100 0
+b1100100 :
+b1010000 /
+b1010000 9
+b1010000 .
+b1010000 8
+1Q
+b0 T
+b0 R
+b1100100 [
+b1010000 Z
+b1010000 Y
+b1100100 X
+b1010000 W
+b1010000 V
+1,
+#120000
+0,
+#125000
+1,
+#126000
+14
+#130000
+0,
+#135000
+1,
+#136000
+04
+#140000
+0,
+#145000
+1,
+#146000
+b100 7
+b11 6
+#150000
+0,
+#155000
+b0 #
+b0 @
+b0 "
+b0 ?
+b0 %
+b0 B
+b0 $
+b0 A
+b101 H
+b10 G
+b101 J
+b10 I
+0&
+1!
+0>
+b101 E
+b10 C
+b101 F
+b10 D
+b101 3
+b101 =
+b10 2
+b10 <
+b10 1
+b10 ;
+b101 0
+b101 :
+b10 /
+b10 9
+b10 .
+b10 8
+0Q
+b101 [
+b10 Z
+b10 Y
+b101 X
+b10 W
+b10 V
+1,
+#160000
+0,
+#165000
+1,
+#166000
+14
+#170000
+0,
+#175000
+1,
+#176000
+04
+#180000
+0,
+#185000
+1,
+#186000
+b101 7
+b100 6
+#190000
+0,
+#195000
+1,

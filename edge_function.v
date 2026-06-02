@@ -8,7 +8,7 @@ module edge_function #(
     input  wire signed [COORD_BITS-1:0] px, py,  
 
     output wire signed [RESULT_BITS-1:0] result, 
-    output wire inside
+    output wire inside_flag
 );
 
 wire signed [COORD_BITS:0] dx = px - x0;   
@@ -18,6 +18,6 @@ wire signed [COORD_BITS:0] ey = y1 - y0;
 
 assign result = (dx * ey) - (dy * ex);
 wire is_horizontal = (y1 == y0);
-assign inside = is_horizontal ? (result > 0) : (result >= 0);
+assign inside_flag = is_horizontal ? (result < 0) : (result <= 0);
 
 endmodule
