@@ -1,1 +1,5 @@
-"*.vcd*.out*.hexsimtb_tile_binner" 
+*.vcd
+*.out
+*.hex
+sim
+tb_tile_binner
