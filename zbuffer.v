@@ -1,6 +1,5 @@
 module zbuffer (
     input  wire clk,
-    input  wire rst,
     input  wire read_en,
     input  wire write_en,
     input  wire [5:0]  read_x,
@@ -11,21 +10,24 @@ module zbuffer (
     output reg  [15:0] depth_out
 );
 
-    reg [15:0] zbuf [0:63][0:63];
-    integer i, j;
+    reg [15:0] zbuf [0:4095];
+    wire [11:0] write_addr = {write_y, write_x};  // In binary, multiplying by 64 is just shifting left by 6.
+    wire [11:0] read_addr  = {read_y, read_x};    // So we just concatenate {y, x}.
 
     always @(posedge clk) begin
-        if (rst) begin
-            for (i = 0; i < 64; i = i + 1)
-                for (j = 0; j < 64; j = j + 1)
-                    zbuf[i][j] <= 16'hFFFF;
-        end else begin
-            if (write_en)
-                zbuf[write_y][write_x] <= depth_in;
+        if (write_en) begin
+            zbuf[write_addr] <= depth_in;
+        end
 
-            if (read_en)
-                depth_out <= zbuf[read_y][read_x];
+        if (read_en) begin
+            depth_out <= zbuf[read_addr];
         end
     end
 
+integer k;
+    initial begin
+        for (k = 0; k < 4096; k = k + 1) begin
+            zbuf[k] = 16'hFFFF;
+        end
+    end
 endmodule
