@@ -33,9 +33,8 @@ module output_merger (
             zbuf_write_en <= 0;
             fb_write_en   <= 0;
             s1_valid      <= 0;
-        end else begin
-            zbuf_write_en <= 0;
-            fb_write_en   <= 0;
+        end 
+        else begin
             zbuf_read_en <= pixel_valid_in;
             zbuf_read_x  <= pixel_x;
             zbuf_read_y  <= pixel_y;
@@ -44,6 +43,8 @@ module output_merger (
             s1_y         <= pixel_y;
             s1_color     <= pixel_color_in;
             s1_depth     <= pixel_depth_in;
+            zbuf_write_en <= 0;
+            fb_write_en   <= 0;
 
             if (s1_valid) begin
                 if (s1_depth < zbuf_depth_out) begin
