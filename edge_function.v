@@ -1,7 +1,7 @@
 `include "params.v" 
 module edge_function #(
     parameter COORD_BITS  = `COORD_BITS,   
-    parameter RESULT_BITS = 33             
+    parameter RESULT_BITS = 35             
 )(
     input  wire signed [COORD_BITS-1:0] x0, y0,  
     input  wire signed [COORD_BITS-1:0] x1, y1,  
