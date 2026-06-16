@@ -20,6 +20,65 @@ module gpu_top (
     wire tile_valid;
     wire no_overlap;
 
+    reg [2:0] state;
+    localparam T_IDLE   = 3'd0, T_START  = 3'd1, T_WAIT   = 3'd2, T_NEXT   = 3'd3, T_DONE   = 3'd4;
+    reg [2:0] curr_tile_x, curr_tile_y;
+    reg rast_start_pulse;
+
+    always @(posedge clk) begin
+        if (rst) begin
+            state <= T_IDLE;
+            curr_tile_x <= 0;
+            curr_tile_y <= 0;
+            rast_start_pulse <= 0;
+        end
+        else begin
+            rast_start_pulse <= 0; 
+
+            case (state)
+                T_IDLE: begin
+                    if (raster_start) begin
+                        if (tile_valid) begin 
+                            curr_tile_x <= tile_x_min;
+                            curr_tile_y <= tile_y_min;
+                            state <= T_START;
+                        end 
+                        else begin
+                            state <= T_DONE;
+                        end
+                    end
+                end
+
+                T_START: begin
+                    rast_start_pulse <= 1; 
+                    state <= T_WAIT;
+                end
+
+                T_WAIT: begin
+                    if (raster_done) begin 
+                       state <= T_NEXT;
+                    end
+                end
+
+                T_NEXT: begin
+                    if (curr_tile_x < tile_x_max) begin
+                        curr_tile_x <= curr_tile_x + 1;
+                        state <= T_START;
+                    end else if (curr_tile_y < tile_y_max) begin
+                        curr_tile_x <= tile_x_min;
+                        curr_tile_y <= curr_tile_y + 1;
+                        state <= T_START;
+                    end else begin
+                        state <= T_DONE;
+                    end
+                end
+
+                T_DONE: begin
+                    state <= T_IDLE;
+                end
+            endcase
+        end
+    end
     tile_binner binner (
         .V0x(v0x),
         .V0y(v0y),
@@ -44,7 +103,7 @@ module gpu_top (
     tile_rasterizer rasterizer (
         .clk(clk),
         .rst(rst),
-        .start(raster_start),
+        .start(rast_start_pulse),
         .tile_ox({10'd0, tile_x_min, 3'b000}),
         .tile_oy({10'd0, tile_y_min, 3'b000}),
         .v0x(v0x),
@@ -72,7 +131,6 @@ module gpu_top (
 
     zbuffer zbuf (
         .clk(clk),
-        .rst(rst),
         .read_en(zbuf_read_en),
         .write_en(zbuf_write_en),
         .read_x(zbuf_read_x),
@@ -112,7 +170,6 @@ module gpu_top (
 
     framebuffer fb (
         .clk(clk),
-        .rst(rst),
         .write_en(fb_write_en),
         .write_x(fb_write_x),
         .write_y(fb_write_y),
