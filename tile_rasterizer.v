@@ -35,11 +35,10 @@ module tile_rasterizer (
     reg [`COORD_BITS-1:0] v2x_r, v2y_r;
     reg [`COLOR_BITS-1:0] color_r;
 
-    wire [`COORD_BITS-1:0] abs_x = tile_ox_r + {{(`COORD_BITS-3){1'b0}}, px};
-    wire [`COORD_BITS-1:0] abs_y = tile_oy_r + {{(`COORD_BITS-3){1'b0}}, py};
+    wire signed [`COORD_BITS-1:0] abs_x = tile_ox_r + {{(`COORD_BITS-3){1'b0}}, px};
+    wire signed [`COORD_BITS-1:0] abs_y = tile_oy_r + {{(`COORD_BITS-3){1'b0}}, py};
 
     wire inside0, inside1, inside2;
-
     edge_function ef0 (
         .x0(v0x_r), .y0(v0y_r),
         .x1(v1x_r), .y1(v1y_r),
@@ -64,8 +63,13 @@ module tile_rasterizer (
     always @(posedge clk) begin
         if (rst) begin
             state <= IDLE;
-            px    <= 3'd0;
-            py    <= 3'd0;
+            tile_ox_r <= 0; 
+            tile_oy_r <= 0;
+            color_r   <= 0;
+            px <= 0; py <= 0;
+            v0x_r <= 0; v0y_r <= 0;
+            v1x_r <= 0; v1y_r <= 0;
+            v2x_r <= 0; v2y_r <= 0;
         end else begin
             case (state)
 
