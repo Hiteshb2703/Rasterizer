@@ -15,6 +15,12 @@ module framebuffer (
     wire [11:0] w_addr = {write_y, write_x};
     wire [11:0] r_addr = {read_y, read_x};
 
+integer i;
+initial begin
+    for (i = 0; i < 4096; i = i + 1) begin
+        fb[i] = 8'h00; 
+    end
+end
     always @(posedge clk) begin
         if (write_en) begin
             fb[w_addr] <= write_color;
@@ -37,9 +43,4 @@ module framebuffer (
         end
     end
 
-    integer k;
-
-    initial begin
-        for (k = 0; k < 4096; k = k + 1) fb[k] = 8'h00;
-    end
 endmodule
