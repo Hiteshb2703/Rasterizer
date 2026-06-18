@@ -5,10 +5,10 @@ module gpu_top_tb;
     reg rst;
     reg [15:0] v0x;
     reg [15:0] v0y;
-    reg [15:0] v1x;
-    reg [15:0] v1y;
     reg [15:0] v2x;
     reg [15:0] v2y;
+    reg [15:0] v1x;
+    reg [15:0] v1y;
     reg [7:0] tri_color;
     reg [15:0] tri_depth;
     reg raster_start;
@@ -19,10 +19,10 @@ module gpu_top_tb;
         .rst(rst),
         .v0x(v0x),
         .v0y(v0y),
-        .v1x(v1x),
-        .v1y(v1y),
         .v2x(v2x),
         .v2y(v2y),
+        .v1x(v1x),
+        .v1y(v1y),
         .tri_color(tri_color),
         .tri_depth(tri_depth),
         .raster_start(raster_start),
@@ -44,10 +44,10 @@ module gpu_top_tb;
 
         v0x = 16'd10;
         v0y = 16'd10;
-        v1x = 16'd30;
+        v1x = 16'd50;
         v1y = 16'd10;
-        v2x = 16'd20;
-        v2y = 16'd30;
+        v2x = 16'd10;
+        v2y = 16'd50;
         tri_color = 8'hFF;
         tri_depth = 16'd100;
 
@@ -55,11 +55,17 @@ module gpu_top_tb;
         raster_start = 1;
         #10;
         raster_start = 0;
-        #5000;
+        wait (dut.state == 3'd4);
+
+      #200;
+
+        @(posedge clk);
         dump_en = 1;
-        #10;
+        @(posedge clk);
         dump_en = 0;
-        #100; 
+
+        $display("Image saved to framebuffer_dump.hex");
+        #100;
         $finish;
 
     end
