@@ -76,7 +76,7 @@ initial begin
     pixel_y = 0;
     pixel_color_in = 0;
     pixel_depth_in = 0;
-    repeat(2) @(posedge clk);
+    repeat(3) @(posedge clk);
     rst = 0;
 
     @(posedge clk);
@@ -89,7 +89,7 @@ initial begin
 
     @(posedge clk);
     pixel_valid_in <= 0;
-    repeat(2) @(posedge clk);
+    repeat(3) @(posedge clk);
 
     if(fb_write_en && zbuf_write_en)
         $display("PASS: first fragment accepted");
@@ -106,7 +106,7 @@ initial begin
     @(posedge clk);
     pixel_valid_in <= 0;
 
-    repeat(2) @(posedge clk);
+    repeat(3) @(posedge clk);
 
     if(!fb_write_en && !zbuf_write_en)
         $display("PASS: farther fragment rejected");
@@ -122,7 +122,7 @@ initial begin
     pixel_depth_in <= 16'd50;
     @(posedge clk);
     pixel_valid_in <= 0;
-    repeat(2) @(posedge clk);
+    repeat(3) @(posedge clk);
 
     if(fb_write_en &&
        zbuf_write_en &&
