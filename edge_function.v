@@ -16,9 +16,9 @@ wire signed [COORD_BITS:0] dy = py - y0;
 wire signed [COORD_BITS:0] ex = x1 - x0;   
 wire signed [COORD_BITS:0] ey = y1 - y0;
 
-assign result = (dx * ey) - (dy * ex);
+assign result = $signed(dx * ey) - $signed(dy * ex);
 wire is_top  = (y0 == y1) && (x1 < x0);   
-wire is_left = (y1 < y0);                  
+wire is_left = (x1 < x0) || (x1 == x0 && y1 < y0);                
 wire is_top_left = is_top || is_left;
 assign inside_flag = is_top_left ? (result <= 0) : (result < 0);
 
