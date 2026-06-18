@@ -3,7 +3,6 @@
 module tb_zbuffer;
 
 reg clk;
-reg rst;
 reg read_en;
 reg write_en;
 reg [5:0] read_x;
@@ -15,7 +14,6 @@ wire [15:0] depth_out;
 
 zbuffer dut(
     .clk(clk),
-    .rst(rst),
     .read_en(read_en),
     .write_en(write_en),
     .read_x(read_x),
@@ -30,13 +28,10 @@ always #5 clk = ~clk;
 
 initial begin
     clk = 0;
-
-    rst = 1;
     read_en = 0;
     write_en = 0;
 
     repeat(2) @(posedge clk);
-    rst = 0;
 
     @(posedge clk);
     write_en = 1;
