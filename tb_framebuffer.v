@@ -3,7 +3,6 @@
 module tb_framebuffer;
 
 reg clk;
-reg rst;
 reg write_en;
 reg [5:0] write_x;
 reg [5:0] write_y;
@@ -16,7 +15,6 @@ reg dump_en;
 
 framebuffer dut(
     .clk(clk),
-    .rst(rst),
     .write_en(write_en),
     .write_x(write_x),
     .write_y(write_y),
@@ -32,14 +30,11 @@ always #5 clk=~clk;
 
 initial begin
     clk=0;
-
-    rst=1;
     write_en=0;
     read_en=0;
     dump_en=0;
 
     repeat(2) @(posedge clk);
-    rst=0;
 
     @(posedge clk);
     write_en=1;
