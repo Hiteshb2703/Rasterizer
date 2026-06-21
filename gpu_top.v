@@ -58,7 +58,7 @@ module gpu_top (
                 end
 
                 T_WAIT: begin
-                    if (raster_done && !rast_start_pulse) begin 
+                    if (raster_done) begin 
                        state <= T_NEXT;
                     end
                 end
