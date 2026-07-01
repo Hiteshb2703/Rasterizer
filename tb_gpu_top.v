@@ -44,10 +44,10 @@ module gpu_top_tb;
 
         v0x = 16'd10;
         v0y = 16'd10;
-        v1x = 16'd50;
+        v1x = 16'd16;
         v1y = 16'd10;
         v2x = 16'd10;
-        v2y = 16'd50;
+        v2y = 16'd16;
         tri_color = 8'hFF;
         tri_depth = 16'd100;
 
