@@ -37,27 +37,31 @@ module tile_rasterizer (
 
     wire signed [`COORD_BITS-1:0] abs_x = tile_ox_r + {{(`COORD_BITS-3){1'b0}}, px};
     wire signed [`COORD_BITS-1:0] abs_y = tile_oy_r + {{(`COORD_BITS-3){1'b0}}, py};
+    wire signed [34:0] e0, e1, e2;
 
     wire inside0, inside1, inside2;
     edge_function ef0 (
         .x0(v0x_r), .y0(v0y_r),
         .x1(v1x_r), .y1(v1y_r),
         .px(abs_x),  .py(abs_y),
-        .inside_flag(inside0)
+        .inside_flag(inside0),
+        .result(e0)
     );
 
     edge_function ef1 (
         .x0(v1x_r), .y0(v1y_r),
         .x1(v2x_r), .y1(v2y_r),
         .px(abs_x),  .py(abs_y),
-        .inside_flag(inside1)
+        .inside_flag(inside1),
+        .result(e1)
     );
 
     edge_function ef2 (
         .x0(v2x_r), .y0(v2y_r),
         .x1(v0x_r), .y1(v0y_r),
         .px(abs_x),  .py(abs_y),
-        .inside_flag(inside2)
+        .inside_flag(inside2),
+        .result(e2)
     );
 
     always @(posedge clk) begin
