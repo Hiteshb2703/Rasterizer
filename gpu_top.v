@@ -10,7 +10,11 @@ module gpu_top (
     input  wire [7:0]  tri_color,
     input  wire [15:0] tri_depth,
     input  wire raster_start,
-    input  wire dump_en
+    input  wire dump_en,
+    output wire fb_write_en_out,
+    output wire [5:0] fb_write_x_out,
+    output wire [5:0] fb_write_y_out,
+    output wire [7:0] fb_write_color_out
 );
 
     wire [2:0] tile_x_min;
@@ -185,4 +189,9 @@ module gpu_top (
         .dump_en(dump_en)
     );
 
+    assign fb_write_en_out    = fb_write_en;
+    assign fb_write_x_out     = fb_write_x;
+    assign fb_write_y_out     = fb_write_y;
+    assign fb_write_color_out = fb_write_color;
+    
 endmodule
