@@ -1,12 +1,11 @@
 # Tile-Based Rasterizer 
 A hardware level triangle rasterizer implemented in synthesizable Verilog, modelling the pipeline of a GPU's rasterization stage.
-The design uses a tile-based rendering approach, the same principle used in modern mobile GPUs to limit memory bandwidth
-by restricting pixel write to localized tile regions rather than the entire framebuffer. It Renders triangles to a 64×64 framebuffer using per-pixel edge-function evaluation, depth buffering, and an output merger.
+The design uses coarse tile clipping: the triangle’s bounding box is mapped to a range of 8×8 tiles, and only pixels in those tiles are evaluated. It is not a full tile-based deferred renderer. The Z-buffer and framebuffer are global 64×64 memories.
 
-## Why Tile-Based Binning?
+## Why Tile clipping?
 A naïve rasterizer tests every screen pixel against every triangle. For a 1080p display with hundreds of triangles, this means millions of evaluations and repeated writes to the same pixel by multiple overlapping triangles, also known as Overdraw. 
 
-**Tile-based binning** solves this by first computing the AABB of the three vertices, clamps to screen bounds, and determines which 8x8 tiles the triangle's bounding box touches so that the rasterizer only iterates pixels within those tiles instead of the entire screen, avoiding edge-function evaluations on pixels the triangle can't possibly cover. Triangles that are off-screen are culled at the binner stage and never reach the edge-function unit, eliminating unnecessary computation. 
+Tile clipping cuts edge-function evaluations by skipping tiles the bounding box can’t touch. Overdraw is handled by the Z-test, which stops farther fragments overwriting nearer ones
 
 ## Synthesis & Implementation Results (Artix-7 xc7a35t)
 | Resource | Used | Available | Utilization |
@@ -28,17 +27,17 @@ Given three 2D vertex coordinates and a color/depth value, the pipeline determin
 lie inside the triangle and writes them to a framebuffer, while using a Z-buffer to ensure correct depth visibility.
 
 ## pipeline
-     tile_binner → tile_rasterizer → edge_function → output_merger → framebuffer.
+     tile_binner (bounding box → tile range) → gpu_top tile walk FSM → tile_rasterizer (1 pixel/cycle, 3x edge_function) → output_merger ⇄ zbuffer → framebuffer.
 
 ## Module Reference
     1. params.v : Global constants (screen size, tile size, bit widths)
     2. tile_binner.v : Bounding-box computation, tile index extraction
     3. tile_rasterizer.v : Pixel wise iterating FSM within tile bounds
-    4. edge_function.v : Inside-triangle test using signed edge equations
-    5. zbuffer.v : Depth buffer, read/write per pixel address
+    4. edge_function.v : Signed edge equations with top-left fill rule (single winding order)
+    5. zbuffer.v : 4096×16, initialised to 0xFFFF, synchronous read
     6. framebuffer.v : Color buffer, write on pass, hex dump on dump_en
     7. output_merger.v : Z-test orchestration and framebuffer write control
-    8. gpu_top.v : Top level integration module
+    8. gpu_top.v : Top level integration and tile walk FSM
 
 ## Design Parameters 
     1. SCREEN_W/SCREEN_H : Screen resolution in pixels
@@ -69,3 +68,5 @@ gtkwave gpu_top.vcd
 - **Fixed point only:** Coordinates are 16-bit integers. fractional coordinates is not supported.
 - **Single triangle per rasterization pass:** Real GPU rasterizers process thousands of triangles concurrently.
 - **64×64 resolution:** Framebuffer is intentionally small for simulation speed.
+- Only one triangle winding order renders
+- Timing not closed: WNS −0.573 ns at 100 MHz; critical path is the edge-function multiplies. Planned fix: pipeline them.
