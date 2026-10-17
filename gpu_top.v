@@ -29,8 +29,6 @@ module gpu_top (
     reg [2:0] curr_tile_x, curr_tile_y;
     reg rast_start_pulse;
 
-    wire [2:0] safe_x_max = (tile_x_max > 3'd7) ? 3'd7 : tile_x_max[2:0];
-    wire [2:0] safe_y_max = (tile_y_max > 3'd7) ? 3'd7 : tile_y_max[2:0];
 
     always @(posedge clk) begin
         if (rst) begin
@@ -68,10 +66,10 @@ module gpu_top (
                 end
 
                 T_NEXT: begin
-                    if (curr_tile_x < safe_x_max) begin
+                    if (curr_tile_x < tile_x_max) begin
                         curr_tile_x <= curr_tile_x + 1;
                         state <= T_START;
-                    end else if (curr_tile_y < safe_y_max) begin
+                    end else if (curr_tile_y < tile_y_max) begin
                         curr_tile_x <= tile_x_min;
                         curr_tile_y <= curr_tile_y + 1;
                         state <= T_START;

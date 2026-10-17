@@ -22,25 +22,22 @@ initial begin
     end
 end
     always @(posedge clk) begin
-        if (write_en) begin
-            fb[w_addr] <= write_color;
-        end
+        if (write_en) fb[w_addr] <= write_color;
+        if (read_en)  read_color <= fb[r_addr];
+    end
 
-        if (read_en) begin
-            read_color <= fb[r_addr];
-        end
-
-        if (dump_en) begin
-            begin : dump_block
-                integer fd;
-                integer i;
-                fd = $fopen("framebuffer_dump.hex", "w");
-                for (i = 0; i < 4096; i = i + 1) begin
-                    $fwrite(fd, "%02h\n", fb[i]);
-                end
-                $fclose(fd);
-            end
+`ifndef SYNTHESIS
+    // dump the framebuffer to a hex file
+    always @(posedge clk) begin
+        if (dump_en) begin : dump_block
+            integer fd;
+            integer k;
+            fd = $fopen("framebuffer_dump.hex", "w");
+            for (k = 0; k < 4096; k = k + 1)
+                $fwrite(fd, "%02h\n", fb[k]);
+            $fclose(fd);
         end
     end
+`endif
 
 endmodule
